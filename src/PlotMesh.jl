@@ -1,3 +1,4 @@
+module PlotMesh
 using Luxor, Colors, HDF5
 # Plotting mesh from JuliaFEM h5-file
 # Currently deformed mesh plots only 1 mode of a modal solution.
@@ -294,7 +295,7 @@ function draw_triangles(triangles,plane,imageSize, deform, h5data)
   end
 end
 
-"""
+#=
 #This will open a h5-file and read Tri6 mesh and save plot 
 i = "test_geom.h5"
 c = h5open(i, "r") do file
@@ -312,4 +313,7 @@ triangles = trias_h5(h5data)
 draw_triangles(triangles,"XZ",imageSize, -Inf, h5data)
 
 finish()
-"""
+=#
+
+export trias_h5, draw_triangles
+end
