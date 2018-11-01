@@ -293,3 +293,23 @@ function draw_triangles(triangles,plane,imageSize, deform, h5data)
     end
   end
 end
+
+"""
+#This will open a h5-file and read Tri6 mesh and save plot 
+i = "test_geom.h5"
+c = h5open(i, "r") do file
+	global h5data=read(file)
+end
+
+#Define image
+imageSize = (800,800)
+Drawing(imageSize[1], imageSize[2], string(i[1:end-2],"png"))
+background("white")
+origin()
+
+#Draw mesh
+triangles = trias_h5(h5data)
+draw_triangles(triangles,"XZ",imageSize, -Inf, h5data)
+
+finish()
+"""
