@@ -1,6 +1,6 @@
 using Luxor, Colors, HDF5
 # Plotting mesh from JuliaFEM h5-file
-
+# Currently deformed mesh plots only 1 mode of a modal solution.
 
 function triangle(points, mesh_col, br)
 	#Plotting a coloured triangle from points.
