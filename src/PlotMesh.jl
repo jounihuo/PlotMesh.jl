@@ -8,7 +8,7 @@ function triangle(points, mesh_col, br)
     jet = RGB{Float64}[
           RGB(clamp(min(4x - 1.5, -4x + 4.5) ,0.0,1.0*br),
               clamp(min(4x - 0.5, -4x + 3.5) ,0.0,1.0*br),
-              clamp(min(4x + 0.5, -4x + 2.5) ,0.0,1.0*br))  
+              clamp(min(4x + 0.5, -4x + 2.5) ,0.0,1.0*br))
 	      for x in LinRange(0.0,1.0,12)]
 
     mesh_col = mesh(points, jet[mesh_col])
@@ -37,23 +37,23 @@ function bounds3D(mesh)
     end
     if mesh.nodes[key][1] > max_x
       max_x = mesh.nodes[key][1]
-    end    
+    end
     if mesh.nodes[key][1] < min_x
       min_x = mesh.nodes[key][1]
     end
     if mesh.nodes[key][1] > max_y
       max_y = mesh.nodes[key][2]
-    end    
+    end
     if mesh.nodes[key][1] < min_y
       min_y = mesh.nodes[key][2]
     end
     if mesh.nodes[key][1] > max_z
       max_z = mesh.nodes[key][3]
-    end    
+    end
     if mesh.nodes[key][1] < min_z
       min_z = mesh.nodes[key][3]
     end
-  end 
+  end
   return max_x, min_x, max_y, min_y, max_z, min_z
 end
 
@@ -64,7 +64,7 @@ function triangle_normal(P1,P2,P3)
   x3,y3,z3 = P3
   n = [(y2-y1)*(z3-z1)-(y3-y1)*(z2-z1)
        (z2-z1)*(x3-x1)-(x2-x1)*(z3-z1)
-       (x2-x1)*(y3-y1)-(x3-x1)*(y2-y1)] 
+       (x2-x1)*(y3-y1)-(x3-x1)*(y2-y1)]
   return n
 end
 
@@ -114,7 +114,7 @@ function trias_h5(h5data)
   triangles = zeros(nTet10*4,9+3)
   i = 1
   #Collecting the element data
-  for key in range(1,nTet10)
+  for key in range(1,stop=nTet10)
     nodes = h5data["Topology"]["Tet10"]["Connectivity"][:,key]
 
     xyz1 = h5data["Geometry"][:,nodes[1]+1]
@@ -166,7 +166,7 @@ function rangeInt(x,xMin,xMax,n)
   end
   if idx < 1
     idx = 1
-  end  
+  end
   return idx
 end
 
@@ -178,24 +178,24 @@ function draw_triangles(triangles,plane,imageSize, deform, h5data)
     n  = [0.,0.,1.]
   end
   if plane=="YZ"
-    r0 = [0.,0.,0.]  
+    r0 = [0.,0.,0.]
     e1 = [0.,1.,0.]
     e2 = [0.,0.,1.]
     n  = [1.,0.,0.]
   end
   if plane=="XZ"
-    r0 = [0.,0.,0.]  
+    r0 = [0.,0.,0.]
     e1 = [1.,0.,0.]
     e2 = [0.,0.,1.]
     n  = [0.,1.,0.]
   end
   if plane=="XYZ"
-    r0 = [0.,0.,0.]  
+    r0 = [0.,0.,0.]
     e1 = [-1/sqrt(2),1/sqrt(2),0.]
     e2 = [0.,0.,1.]
     n  = [1/sqrt(3),1/sqrt(3),1/sqrt(3)]
   end
-  
+
   if deform>-10000.0
     #Counting all the Tet10 elements
     nTet10 = length(h5data["Topology"]["Tet10"]["Element IDs"])
@@ -203,12 +203,12 @@ function draw_triangles(triangles,plane,imageSize, deform, h5data)
     triangles = zeros(nTet10*4,9+3)
     i = 1
     #Collecting the element data
-    for key in range(1,nTet10)
+    for key in range(1,stop=nTet10)
       nodes = h5data["Topology"]["Tet10"]["Connectivity"][:,key]
-      
+
       modeNodes=h5data["Results"]["Natural Frequency Analysis"]["Displacement"]["Mode 1"]
-      
-      xyz1 = h5data["Geometry"][:,nodes[1]+1] + modeNodes[:,nodes[1]+1]*deform 
+
+      xyz1 = h5data["Geometry"][:,nodes[1]+1] + modeNodes[:,nodes[1]+1]*deform
       xyz2 = h5data["Geometry"][:,nodes[2]+1] + modeNodes[:,nodes[2]+1]*deform
       xyz3 = h5data["Geometry"][:,nodes[3]+1] + modeNodes[:,nodes[3]+1]*deform
       xyz4 = h5data["Geometry"][:,nodes[4]+1] + modeNodes[:,nodes[4]+1]*deform
@@ -235,7 +235,7 @@ function draw_triangles(triangles,plane,imageSize, deform, h5data)
       i += 1
     end
   end
-  
+
   #Projecting and calculating distance and angle from viewplane
   projTri = zeros(size(triangles,1),8)
 
@@ -248,39 +248,39 @@ function draw_triangles(triangles,plane,imageSize, deform, h5data)
     angle = acos((n'nt)/sqrt(nt'nt+n'n))
     projTri[i,:] = [x1,y1,x2,y2,x3,y3,d,angle]
   end
-  
+
   #Centering xy-data
   xMax = maximum(projTri[:,[1,3,5]])
   xMin = minimum(projTri[:,[1,3,5]])
   yMax = maximum(projTri[:,[2,4,6]])
   yMin = minimum(projTri[:,[2,4,6]])
-  
-  projTri[:,1] = projTri[:,1].-(xMin+xMax)/2 
-  projTri[:,2] = projTri[:,2].-(yMin+yMax)/2 
-  projTri[:,3] = projTri[:,3].-(xMin+xMax)/2 
-  projTri[:,4] = projTri[:,4].-(yMin+yMax)/2 
-  projTri[:,5] = projTri[:,5].-(xMin+xMax)/2 
-  projTri[:,6] = projTri[:,6].-(yMin+yMax)/2 
-  
+
+  projTri[:,1] = projTri[:,1].-(xMin+xMax)/2
+  projTri[:,2] = projTri[:,2].-(yMin+yMax)/2
+  projTri[:,3] = projTri[:,3].-(xMin+xMax)/2
+  projTri[:,4] = projTri[:,4].-(yMin+yMax)/2
+  projTri[:,5] = projTri[:,5].-(xMin+xMax)/2
+  projTri[:,6] = projTri[:,6].-(yMin+yMax)/2
+
   #Scaling to figure size
   xMax = maximum(projTri[:,[1,3,5]])
   xMin = minimum(projTri[:,[1,3,5]])
   yMax = maximum(projTri[:,[2,4,6]])
   yMin = minimum(projTri[:,[2,4,6]])
-  
+
   scaleX=imageSize[1]/(xMax-xMin)
   scaleY=imageSize[2]/(yMax-yMin)
   scale = minimum([scaleX,scaleY])*0.95
-  
+
   projTri[:,1:6] = projTri[:,1:6]*scale
-  
+
   projTri = sortslices(projTri, dims=1, by=x->x[7])
-  
+
   #Color range index for plotting
   valueMax = maximum(projTri[:,[2,4,6]])
   valueMin = minimum(projTri[:,[2,4,6]])
   nValue = 12
-  
+
   #Plotting the trianguladed surfaces with color scale
   for i=1:size(projTri,1)
     if projTri[i,8]<=(pi/2)
@@ -295,8 +295,31 @@ function draw_triangles(triangles,plane,imageSize, deform, h5data)
   end
 end
 
+function plotmesh(filename; imageSize = (400,400), backgroundcolor="white",
+				  outputfn="plotmesh_output.png")
+	function readh5data()
+    	c = h5open(filename, "r") do file
+        	h5data=read(file)
+    	end
+		return h5data
+	end
+
+    #Define image
+    d = Drawing(imageSize[1], imageSize[2], outputfn)
+    background(backgroundcolor)
+    origin()
+
+    #Draw mesh
+	h5data = readh5data()
+    triangles = trias_h5(h5data)
+    draw_triangles(triangles,"XZ",imageSize, -Inf, h5data)
+
+    finish()
+    return d
+end
+
 #=
-#This will open a h5-file and read Tri6 mesh and save plot 
+#This will open a h5-file and read Tri6 mesh and save plot
 i = "test_geom.h5"
 c = h5open(i, "r") do file
 	global h5data=read(file)
@@ -315,5 +338,5 @@ draw_triangles(triangles,"XZ",imageSize, -Inf, h5data)
 finish()
 =#
 
-export trias_h5, draw_triangles
+export trias_h5, draw_triangles, plotmesh
 end
