@@ -16,4 +16,4 @@ type:     png
 
 ```
 
-[![mesh image](https://raw.githubusercontent.com/jounihuo/PlotMesh.jl/master/test/test_geom.png)()]
+![mesh image](https://raw.githubusercontent.com/jounihuo/PlotMesh.jl/master/test/test_geom.png)
